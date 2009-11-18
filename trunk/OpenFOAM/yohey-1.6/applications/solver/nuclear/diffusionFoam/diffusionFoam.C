@@ -26,7 +26,7 @@ Application
     diffusionFoam
 
 Description
-    Solves a simple Laplace equation, e.g. for thermal diffusion in a solid.
+    Solves a simple Laplace equation.
 
 \*---------------------------------------------------------------------------*/
 
@@ -46,7 +46,7 @@ int main(int argc, char *argv[])
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-    Info<< "\nCalculating temperature distribution\n" << endl;
+    Info<< "\nCalculating neutron distribution\n" << endl;
 
     while (runTime.loop())
     {
@@ -54,15 +54,18 @@ int main(int argc, char *argv[])
 
 #       include "readSIMPLEControls.H"
 
-        for (int nonOrth=0; nonOrth<=nNonOrthCorr; nonOrth++)
+        for (int nonOrth = 0; nonOrth <= nNonOrthCorr; nonOrth++)
         {
             solve
             (
-                fvm::ddt(T) - fvm::laplacian(DT, T)
+                fvm::laplacian(D, phi)
             );
         }
 
-#       include "write.H"
+        if (runTime.outputTime())
+        {
+          runTime.write();
+        }
 
         Info<< "ExecutionTime = " << runTime.elapsedCpuTime() << " s"
             << "  ClockTime = " << runTime.elapsedClockTime() << " s"

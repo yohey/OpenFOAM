@@ -1,10 +1,10 @@
-    Info<< "Reading field T\n" << endl;
+    Info<< "Reading field phi\n" << endl;
 
-    volScalarField T
+    volScalarField phi
     (
         IOobject
         (
-            "T",
+            "phi",
             runTime.timeName(),
             mesh,
             IOobject::MUST_READ,
@@ -29,9 +29,9 @@
     );
 
 
-    Info<< "Reading diffusivity DT\n" << endl;
+    Info<< "Reading diffusivity D\n" << endl;
 
-    dimensionedScalar DT
+    dimensionedScalar D
     (
-        transportProperties.lookup("DT")
+        transportProperties.lookup("D")
     );
