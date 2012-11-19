@@ -14,6 +14,14 @@
     );
 
 
+    dimensionedScalar kEff
+    (
+        "kEff",
+        dimless,
+        1.
+    );
+
+
     Info<< "Reading transportProperties\n" << endl;
 
     IOdictionary transportProperties
@@ -29,9 +37,52 @@
     );
 
 
-    Info<< "Reading diffusivity D\n" << endl;
-
     dimensionedScalar D
     (
+        "D",
+        dimLength,
         transportProperties.lookup("D")
+    );
+
+    dimensionedScalar sigmaA
+    (
+        "sigmaA",
+        dimless / dimLength,
+        transportProperties.lookup("sigmaA")
+    );
+
+    dimensionedScalar sigmaF
+    (
+        "sigmaF",
+        dimless / dimLength,
+        transportProperties.lookup("sigmaF")
+    );
+
+    dimensionedScalar nuSigmaF
+    (
+        "nuSigmaF",
+        dimless / dimLength,
+        transportProperties.lookup("nuSigmaF")
+    );
+
+
+    Info<< "Reading operationProperties\n" << endl;
+
+    IOdictionary operationProperties
+    (
+        IOobject
+        (
+            "operationProperties",
+            runTime.constant(),
+            mesh,
+            IOobject::MUST_READ,
+            IOobject::NO_WRITE
+        )
+    );
+
+    dimensionedScalar power
+    (
+        "power",
+        dimPower,
+        operationProperties.lookup("power")
     );

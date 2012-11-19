@@ -22,15 +22,14 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Application
-    simpleFoam
+    diffusionFoam
 
 Description
-    Steady-state solver for incompressible, turbulent flow
+    Solves a simple Laplace equation.
 
 \*---------------------------------------------------------------------------*/
 
 #include "fvCFD.H"
-#include "simpleControl.H"
 
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
@@ -44,23 +43,33 @@ int main(int argc, char *argv[])
     #include "createMesh.H"
     #include "createFields.H"
 
-    simpleControl simple(mesh);
-
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+    dimensionedScalar energyPerFission("energyPerFission", dimEnergy, 200 * 1.6021892e-19);
+    dimensionedScalar fissions("fissions", power / energyPerFission);
 
     Info<< "\nCalculating neutron distribution\n" << endl;
 
-    while (simple.loop())
+    while (runTime.loop())
     {
         Info<< "Time = " << runTime.timeName() << nl << endl;
 
-        while (simple.correctNonOrthogonal())
-        {
-            solve
-            (
-                fvm::laplacian(D, phi)
-            );
-        }
+        const volScalarField nuSigmaFPhi = nuSigmaF * phi;
+
+        solve
+        (
+            fvm::laplacian(D, phi)
+            - sigmaA * phi
+            + nuSigmaFPhi
+        );
+
+        phi.correctBoundaryConditions();
+
+        kEff = fvc::domainIntegrate(sigmaF * phi) / fissions;
+
+        Info << "kEff = " << kEff.value() << endl;
+
+        phi /= kEff;
 
         runTime.write();
 
