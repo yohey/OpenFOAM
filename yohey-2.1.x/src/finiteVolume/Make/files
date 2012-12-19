@@ -1,4 +1,6 @@
 
 fields/fvPatchFields/derived/cylindricalFixedValue/cylindricalFixedValueFvPatchVectorField.C
 
+fields/fvPatchFields/derived/cylindricalPressureDirectedInletVelocity/cylindricalPressureDirectedInletVelocityFvPatchVectorField.C
+
 LIB = $(FOAM_USER_LIBBIN)/libmyFiniteVolume
