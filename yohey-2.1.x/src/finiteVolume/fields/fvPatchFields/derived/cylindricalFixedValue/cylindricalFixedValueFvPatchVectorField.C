@@ -23,52 +23,68 @@ License
 
 \*---------------------------------------------------------------------------*/
 
-#include "surfaceNormalFixedValueFvPatchVectorField.H"
+#include "cylindricalFixedValueFvPatchVectorField.H"
 #include "addToRunTimeSelectionTable.H"
 #include "volFields.H"
 #include "fvPatchFieldMapper.H"
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
-Foam::surfaceNormalFixedValueFvPatchVectorField::
-surfaceNormalFixedValueFvPatchVectorField
+Foam::cylindricalFixedValueFvPatchVectorField::
+cylindricalFixedValueFvPatchVectorField
 (
     const fvPatch& p,
     const DimensionedField<vector, volMesh>& iF
 )
 :
     fixedValueFvPatchVectorField(p, iF),
-    refValue_(p.size())
+    origin_(vector::zero),
+    axis_(vector::zero),
+    direction_(p.size()),
+    magnitude_(p.size())
 {}
 
 
-Foam::surfaceNormalFixedValueFvPatchVectorField::
-surfaceNormalFixedValueFvPatchVectorField
+Foam::cylindricalFixedValueFvPatchVectorField::
+cylindricalFixedValueFvPatchVectorField
 (
-    const surfaceNormalFixedValueFvPatchVectorField& ptf,
+    const cylindricalFixedValueFvPatchVectorField& ptf,
     const fvPatch& p,
     const DimensionedField<vector, volMesh>& iF,
     const fvPatchFieldMapper& mapper
 )
 :
     fixedValueFvPatchVectorField(p, iF),
-    refValue_(ptf.refValue_, mapper)
+    origin_(ptf.origin_),
+    axis_(ptf.axis_),
+    direction_(ptf.direction_, mapper),
+    magnitude_(ptf.magnitude_, mapper)
 {
+    vectorField radialCf = ptf.patch().Cf() - (ptf.patch().Cf() & ptf.axis_) * ptf.axis_;
+    vectorField e1 = radialCf / mag(radialCf);
+    vectorField e2 = (ptf.axis_ ^ radialCf) / mag(ptf.axis_ ^ radialCf);
+    vector e3 = (ptf.axis_) / mag(ptf.axis_);
+
+    vectorField cartDir =
+      ptf.direction_.component(vector::X) * e1
+      + ptf.direction_.component(vector::Y) * e2
+      + ptf.direction_.component(vector::Z) * e3;
+
     // Note: calculate product only on ptf to avoid multiplication on
     // unset values in reconstructPar.
     fixedValueFvPatchVectorField::operator=
     (
         vectorField
         (
-            ptf.refValue_*ptf.patch().nf(),
+            ptf.magnitude_ * cartDir / mag(cartDir),
             mapper
         )
     );
 }
 
 
-Foam::surfaceNormalFixedValueFvPatchVectorField::
-surfaceNormalFixedValueFvPatchVectorField
+Foam::cylindricalFixedValueFvPatchVectorField::
+cylindricalFixedValueFvPatchVectorField
 (
     const fvPatch& p,
     const DimensionedField<vector, volMesh>& iF,
@@ -76,48 +92,68 @@ surfaceNormalFixedValueFvPatchVectorField
 )
 :
     fixedValueFvPatchVectorField(p, iF),
-    refValue_("refValue", dict, p.size())
+    origin_(dict.lookup("origin")),
+    axis_(dict.lookup("axis")),
+    direction_("direction", dict, p.size()),
+    magnitude_("magnitude", dict, p.size())
 {
-    fvPatchVectorField::operator=(refValue_*patch().nf());
+    vectorField radialCf = patch().Cf() - (patch().Cf() & axis_) * axis_;
+    vectorField e1 = radialCf / mag(radialCf);
+    vectorField e2 = (axis_ ^ radialCf) / mag(axis_ ^ radialCf);
+    vector e3 = (axis_) / mag(axis_);
+
+    vectorField cartDir =
+      direction_.component(vector::X) * e1
+      + direction_.component(vector::Y) * e2
+      + direction_.component(vector::Z) * e3;
+
+    fvPatchVectorField::operator=(magnitude_ * cartDir / mag(cartDir));
 }
 
 
-Foam::surfaceNormalFixedValueFvPatchVectorField::
-surfaceNormalFixedValueFvPatchVectorField
+Foam::cylindricalFixedValueFvPatchVectorField::
+cylindricalFixedValueFvPatchVectorField
 (
-    const surfaceNormalFixedValueFvPatchVectorField& pivpvf
+    const cylindricalFixedValueFvPatchVectorField& pivpvf
 )
 :
     fixedValueFvPatchVectorField(pivpvf),
-    refValue_(pivpvf.refValue_)
+    origin_(pivpvf.origin_),
+    axis_(pivpvf.axis_),
+    direction_(pivpvf.direction_),
+    magnitude_(pivpvf.magnitude_)
 {}
 
 
-Foam::surfaceNormalFixedValueFvPatchVectorField::
-surfaceNormalFixedValueFvPatchVectorField
+Foam::cylindricalFixedValueFvPatchVectorField::
+cylindricalFixedValueFvPatchVectorField
 (
-    const surfaceNormalFixedValueFvPatchVectorField& pivpvf,
+    const cylindricalFixedValueFvPatchVectorField& pivpvf,
     const DimensionedField<vector, volMesh>& iF
 )
 :
     fixedValueFvPatchVectorField(pivpvf, iF),
-    refValue_(pivpvf.refValue_)
+    origin_(pivpvf.origin_),
+    axis_(pivpvf.axis_),
+    direction_(pivpvf.direction_),
+    magnitude_(pivpvf.magnitude_)
 {}
 
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
-void Foam::surfaceNormalFixedValueFvPatchVectorField::autoMap
+void Foam::cylindricalFixedValueFvPatchVectorField::autoMap
 (
     const fvPatchFieldMapper& m
 )
 {
     fixedValueFvPatchVectorField::autoMap(m);
-    refValue_.autoMap(m);
+    direction_.autoMap(m);
+    magnitude_.autoMap(m);
 }
 
 
-void Foam::surfaceNormalFixedValueFvPatchVectorField::rmap
+void Foam::cylindricalFixedValueFvPatchVectorField::rmap
 (
     const fvPatchVectorField& ptf,
     const labelList& addr
@@ -125,17 +161,21 @@ void Foam::surfaceNormalFixedValueFvPatchVectorField::rmap
 {
     fixedValueFvPatchVectorField::rmap(ptf, addr);
 
-    const surfaceNormalFixedValueFvPatchVectorField& tiptf =
-        refCast<const surfaceNormalFixedValueFvPatchVectorField>(ptf);
+    const cylindricalFixedValueFvPatchVectorField& tiptf =
+        refCast<const cylindricalFixedValueFvPatchVectorField>(ptf);
 
-    refValue_.rmap(tiptf.refValue_, addr);
+    direction_.rmap(tiptf.direction_, addr);
+    magnitude_.rmap(tiptf.magnitude_, addr);
 }
 
 
-void Foam::surfaceNormalFixedValueFvPatchVectorField::write(Ostream& os) const
+void Foam::cylindricalFixedValueFvPatchVectorField::write(Ostream& os) const
 {
     fvPatchVectorField::write(os);
-    refValue_.writeEntry("refValue", os);
+    os.writeKeyword("origin") << origin_ << token::END_STATEMENT << nl;
+    os.writeKeyword("axis") << axis_ << token::END_STATEMENT << nl;
+    direction_.writeEntry("direction", os);
+    magnitude_.writeEntry("magnitude", os);
 }
 
 
@@ -146,7 +186,7 @@ namespace Foam
     makePatchTypeField
     (
         fvPatchVectorField,
-        surfaceNormalFixedValueFvPatchVectorField
+        cylindricalFixedValueFvPatchVectorField
     );
 }
 

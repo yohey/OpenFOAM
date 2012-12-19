@@ -22,19 +22,19 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
-    Foam::surfaceNormalFixedValueFvPatchVectorField
+    Foam::cylindricalFixedValueFvPatchVectorField
 
 Description
     Describes a surface normal vector boundary condition by its magnitude.
     Note: The value is positive for outward-pointing vectors
 
 SourceFiles
-    surfaceNormalFixedValueFvPatchVectorField.C
+    cylindricalFixedValueFvPatchVectorField.C
 
 \*---------------------------------------------------------------------------*/
 
-#ifndef surfaceNormalFixedValueFvPatchVectorField_H
-#define surfaceNormalFixedValueFvPatchVectorField_H
+#ifndef cylindricalFixedValueFvPatchVectorField_H
+#define cylindricalFixedValueFvPatchVectorField_H
 
 #include "fvPatchFields.H"
 #include "fixedValueFvPatchFields.H"
@@ -45,35 +45,38 @@ namespace Foam
 {
 
 /*---------------------------------------------------------------------------*\
-                 Class surfaceNormalFixedValueFvPatch Declaration
+                 Class cylindricalFixedValueFvPatch Declaration
 \*---------------------------------------------------------------------------*/
 
-class surfaceNormalFixedValueFvPatchVectorField
+class cylindricalFixedValueFvPatchVectorField
 :
     public fixedValueFvPatchVectorField
 {
     // Private data
 
-        scalarField refValue_;
+        vector origin_;
+        vector axis_;
+        vectorField direction_;
+        scalarField magnitude_;
 
 
 public:
 
     //- Runtime type information
-    TypeName("surfaceNormalFixedValue");
+    TypeName("cylindricalFixedValue");
 
 
     // Constructors
 
         //- Construct from patch and internal field
-        surfaceNormalFixedValueFvPatchVectorField
+        cylindricalFixedValueFvPatchVectorField
         (
             const fvPatch&,
             const DimensionedField<vector, volMesh>&
         );
 
         //- Construct from patch, internal field and dictionary
-        surfaceNormalFixedValueFvPatchVectorField
+        cylindricalFixedValueFvPatchVectorField
         (
             const fvPatch&,
             const DimensionedField<vector, volMesh>&,
@@ -81,20 +84,20 @@ public:
         );
 
         //- Construct by mapping given
-        //  surfaceNormalFixedValueFvPatchVectorField
+        //  cylindricalFixedValueFvPatchVectorField
         //  onto a new patch
-        surfaceNormalFixedValueFvPatchVectorField
+        cylindricalFixedValueFvPatchVectorField
         (
-            const surfaceNormalFixedValueFvPatchVectorField&,
+            const cylindricalFixedValueFvPatchVectorField&,
             const fvPatch&,
             const DimensionedField<vector, volMesh>&,
             const fvPatchFieldMapper&
         );
 
         //- Construct as copy
-        surfaceNormalFixedValueFvPatchVectorField
+        cylindricalFixedValueFvPatchVectorField
         (
-            const surfaceNormalFixedValueFvPatchVectorField&
+            const cylindricalFixedValueFvPatchVectorField&
         );
 
         //- Construct and return a clone
@@ -102,14 +105,14 @@ public:
         {
             return tmp<fvPatchVectorField>
             (
-                new surfaceNormalFixedValueFvPatchVectorField(*this)
+                new cylindricalFixedValueFvPatchVectorField(*this)
             );
         }
 
         //- Construct as copy setting internal field reference
-        surfaceNormalFixedValueFvPatchVectorField
+        cylindricalFixedValueFvPatchVectorField
         (
-            const surfaceNormalFixedValueFvPatchVectorField&,
+            const cylindricalFixedValueFvPatchVectorField&,
             const DimensionedField<vector, volMesh>&
         );
 
@@ -121,7 +124,7 @@ public:
         {
             return tmp<fvPatchVectorField>
             (
-                new surfaceNormalFixedValueFvPatchVectorField
+                new cylindricalFixedValueFvPatchVectorField
                 (
                     *this,
                     iF
@@ -132,6 +135,32 @@ public:
 
 
     // Member functions
+
+        // Access
+
+            //- Return the origin of the cylindricalCS
+            const vector& origin() const
+            {
+                return origin_;
+            }
+
+            //- Return the axis of the cylindricalCS
+            const vector& axis() const
+            {
+                return axis_;
+            }
+
+            //- Return non-const access to the origin of the cylindricalCS
+            vector& origin()
+            {
+                return origin_;
+            }
+
+            //- Return non-const access to the axis of the cylindricalCS
+            vector& axis()
+            {
+                return axis_;
+            }
 
         // Mapping functions
 
