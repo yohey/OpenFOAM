@@ -22,22 +22,22 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
-    Foam::pressureDirectedInletVelocityFvPatchVectorField
+    Foam::cylindricalPressureDirectedInletVelocityFvPatchVectorField
 
 Description
     Velocity inlet boundary condition for patches where the pressure is
     specified. The inflow velocity is obtained from the flux with the
     specified "inletDirection" direction.  If reverse flow is possible or
-    expected use the "pressureDirectedInletOutletVelocityFvPatchVectorField"
+    expected use the "cylindricalPressureDirectedInletOutletVelocityFvPatchVectorField"
     BC instead.
 
 SourceFiles
-    pressureDirectedInletVelocityFvPatchVectorField.C
+    cylindricalPressureDirectedInletVelocityFvPatchVectorField.C
 
 \*---------------------------------------------------------------------------*/
 
-#ifndef pressureDirectedInletVelocityFvPatchVectorField_H
-#define pressureDirectedInletVelocityFvPatchVectorField_H
+#ifndef cylindricalPressureDirectedInletVelocityFvPatchVectorField_H
+#define cylindricalPressureDirectedInletVelocityFvPatchVectorField_H
 
 #include "fvPatchFields.H"
 #include "fixedValueFvPatchFields.H"
@@ -48,10 +48,10 @@ namespace Foam
 {
 
 /*---------------------------------------------------------------------------*\
-                 Class pressureDirectedInletVelocityFvPatch Declaration
+                 Class cylindricalPressureDirectedInletVelocityFvPatch Declaration
 \*---------------------------------------------------------------------------*/
 
-class pressureDirectedInletVelocityFvPatchVectorField
+class cylindricalPressureDirectedInletVelocityFvPatchVectorField
 :
     public fixedValueFvPatchVectorField
 {
@@ -59,26 +59,29 @@ class pressureDirectedInletVelocityFvPatchVectorField
 
         word phiName_;
         word rhoName_;
+        vector origin_;
+        vector axis_;
         vectorField inletDir_;
+        vectorField cartesianInletDir;
 
 
 public:
 
     //- Runtime type information
-    TypeName("pressureDirectedInletVelocity");
+    TypeName("cylindricalPressureDirectedInletVelocity");
 
 
     // Constructors
 
         //- Construct from patch and internal field
-        pressureDirectedInletVelocityFvPatchVectorField
+        cylindricalPressureDirectedInletVelocityFvPatchVectorField
         (
             const fvPatch&,
             const DimensionedField<vector, volMesh>&
         );
 
         //- Construct from patch, internal field and dictionary
-        pressureDirectedInletVelocityFvPatchVectorField
+        cylindricalPressureDirectedInletVelocityFvPatchVectorField
         (
             const fvPatch&,
             const DimensionedField<vector, volMesh>&,
@@ -86,20 +89,20 @@ public:
         );
 
         //- Construct by mapping given
-        //  pressureDirectedInletVelocityFvPatchVectorField
+        //  cylindricalPressureDirectedInletVelocityFvPatchVectorField
         //  onto a new patch
-        pressureDirectedInletVelocityFvPatchVectorField
+        cylindricalPressureDirectedInletVelocityFvPatchVectorField
         (
-            const pressureDirectedInletVelocityFvPatchVectorField&,
+            const cylindricalPressureDirectedInletVelocityFvPatchVectorField&,
             const fvPatch&,
             const DimensionedField<vector, volMesh>&,
             const fvPatchFieldMapper&
         );
 
         //- Construct as copy
-        pressureDirectedInletVelocityFvPatchVectorField
+        cylindricalPressureDirectedInletVelocityFvPatchVectorField
         (
-            const pressureDirectedInletVelocityFvPatchVectorField&
+            const cylindricalPressureDirectedInletVelocityFvPatchVectorField&
         );
 
         //- Construct and return a clone
@@ -107,14 +110,14 @@ public:
         {
             return tmp<fvPatchVectorField>
             (
-                new pressureDirectedInletVelocityFvPatchVectorField(*this)
+                new cylindricalPressureDirectedInletVelocityFvPatchVectorField(*this)
             );
         }
 
         //- Construct as copy setting internal field reference
-        pressureDirectedInletVelocityFvPatchVectorField
+        cylindricalPressureDirectedInletVelocityFvPatchVectorField
         (
-            const pressureDirectedInletVelocityFvPatchVectorField&,
+            const cylindricalPressureDirectedInletVelocityFvPatchVectorField&,
             const DimensionedField<vector, volMesh>&
         );
 
@@ -126,7 +129,7 @@ public:
         {
             return tmp<fvPatchVectorField>
             (
-                new pressureDirectedInletVelocityFvPatchVectorField
+                new cylindricalPressureDirectedInletVelocityFvPatchVectorField
                 (
                     *this,
                     iF
@@ -161,6 +164,30 @@ public:
             word& phiName()
             {
                 return phiName_;
+            }
+
+            //- Return the origin of the cylindricalCS
+            const vector& origin() const
+            {
+                return origin_;
+            }
+
+            //- Return reference to the origin of the cylindricalCS
+            vector& origin()
+            {
+                return origin_;
+            }
+
+            //- Return the axis of the cylindricalCS
+            const vector& axis() const
+            {
+                return axis_;
+            }
+
+            //- Return reference to the axis of the cylindricalCS
+            vector& axis()
+            {
+                return axis_;
             }
 
 

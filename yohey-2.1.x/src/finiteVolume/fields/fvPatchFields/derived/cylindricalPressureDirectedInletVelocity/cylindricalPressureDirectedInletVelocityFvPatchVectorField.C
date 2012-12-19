@@ -23,7 +23,7 @@ License
 
 \*---------------------------------------------------------------------------*/
 
-#include "pressureDirectedInletVelocityFvPatchVectorField.H"
+#include "cylindricalPressureDirectedInletVelocityFvPatchVectorField.H"
 #include "addToRunTimeSelectionTable.H"
 #include "fvPatchFieldMapper.H"
 #include "volFields.H"
@@ -32,8 +32,8 @@ License
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
-Foam::pressureDirectedInletVelocityFvPatchVectorField::
-pressureDirectedInletVelocityFvPatchVectorField
+Foam::cylindricalPressureDirectedInletVelocityFvPatchVectorField::
+cylindricalPressureDirectedInletVelocityFvPatchVectorField
 (
     const fvPatch& p,
     const DimensionedField<vector, volMesh>& iF
@@ -42,14 +42,16 @@ pressureDirectedInletVelocityFvPatchVectorField
     fixedValueFvPatchVectorField(p, iF),
     phiName_("phi"),
     rhoName_("rho"),
+    origin_(vector::zero),
+    axis_(vector::zero),
     inletDir_(p.size())
 {}
 
 
-Foam::pressureDirectedInletVelocityFvPatchVectorField::
-pressureDirectedInletVelocityFvPatchVectorField
+Foam::cylindricalPressureDirectedInletVelocityFvPatchVectorField::
+cylindricalPressureDirectedInletVelocityFvPatchVectorField
 (
-    const pressureDirectedInletVelocityFvPatchVectorField& ptf,
+    const cylindricalPressureDirectedInletVelocityFvPatchVectorField& ptf,
     const fvPatch& p,
     const DimensionedField<vector, volMesh>& iF,
     const fvPatchFieldMapper& mapper
@@ -58,12 +60,14 @@ pressureDirectedInletVelocityFvPatchVectorField
     fixedValueFvPatchVectorField(ptf, p, iF, mapper),
     phiName_(ptf.phiName_),
     rhoName_(ptf.rhoName_),
+    origin_(ptf.origin_),
+    axis_(ptf.axis_),
     inletDir_(ptf.inletDir_, mapper)
 {}
 
 
-Foam::pressureDirectedInletVelocityFvPatchVectorField::
-pressureDirectedInletVelocityFvPatchVectorField
+Foam::cylindricalPressureDirectedInletVelocityFvPatchVectorField::
+cylindricalPressureDirectedInletVelocityFvPatchVectorField
 (
     const fvPatch& p,
     const DimensionedField<vector, volMesh>& iF,
@@ -73,42 +77,48 @@ pressureDirectedInletVelocityFvPatchVectorField
     fixedValueFvPatchVectorField(p, iF),
     phiName_(dict.lookupOrDefault<word>("phi", "phi")),
     rhoName_(dict.lookupOrDefault<word>("rho", "rho")),
+    origin_(dict.lookup("origin")),
+    axis_(dict.lookup("axis")),
     inletDir_("inletDirection", dict, p.size())
 {
     fvPatchVectorField::operator=(vectorField("value", dict, p.size()));
 }
 
 
-Foam::pressureDirectedInletVelocityFvPatchVectorField::
-pressureDirectedInletVelocityFvPatchVectorField
+Foam::cylindricalPressureDirectedInletVelocityFvPatchVectorField::
+cylindricalPressureDirectedInletVelocityFvPatchVectorField
 (
-    const pressureDirectedInletVelocityFvPatchVectorField& pivpvf
+    const cylindricalPressureDirectedInletVelocityFvPatchVectorField& pivpvf
 )
 :
     fixedValueFvPatchVectorField(pivpvf),
     phiName_(pivpvf.phiName_),
     rhoName_(pivpvf.rhoName_),
+    origin_(pivpvf.origin_),
+    axis_(pivpvf.axis_),
     inletDir_(pivpvf.inletDir_)
 {}
 
 
-Foam::pressureDirectedInletVelocityFvPatchVectorField::
-pressureDirectedInletVelocityFvPatchVectorField
+Foam::cylindricalPressureDirectedInletVelocityFvPatchVectorField::
+cylindricalPressureDirectedInletVelocityFvPatchVectorField
 (
-    const pressureDirectedInletVelocityFvPatchVectorField& pivpvf,
+    const cylindricalPressureDirectedInletVelocityFvPatchVectorField& pivpvf,
     const DimensionedField<vector, volMesh>& iF
 )
 :
     fixedValueFvPatchVectorField(pivpvf, iF),
     phiName_(pivpvf.phiName_),
     rhoName_(pivpvf.rhoName_),
+    origin_(pivpvf.origin_),
+    axis_(pivpvf.axis_),
     inletDir_(pivpvf.inletDir_)
 {}
 
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
-void Foam::pressureDirectedInletVelocityFvPatchVectorField::autoMap
+void Foam::cylindricalPressureDirectedInletVelocityFvPatchVectorField::autoMap
 (
     const fvPatchFieldMapper& m
 )
@@ -118,7 +128,7 @@ void Foam::pressureDirectedInletVelocityFvPatchVectorField::autoMap
 }
 
 
-void Foam::pressureDirectedInletVelocityFvPatchVectorField::rmap
+void Foam::cylindricalPressureDirectedInletVelocityFvPatchVectorField::rmap
 (
     const fvPatchVectorField& ptf,
     const labelList& addr
@@ -126,14 +136,14 @@ void Foam::pressureDirectedInletVelocityFvPatchVectorField::rmap
 {
     fixedValueFvPatchVectorField::rmap(ptf, addr);
 
-    const pressureDirectedInletVelocityFvPatchVectorField& tiptf =
-        refCast<const pressureDirectedInletVelocityFvPatchVectorField>(ptf);
+    const cylindricalPressureDirectedInletVelocityFvPatchVectorField& tiptf =
+        refCast<const cylindricalPressureDirectedInletVelocityFvPatchVectorField>(ptf);
 
     inletDir_.rmap(tiptf.inletDir_, addr);
 }
 
 
-void Foam::pressureDirectedInletVelocityFvPatchVectorField::updateCoeffs()
+void Foam::cylindricalPressureDirectedInletVelocityFvPatchVectorField::updateCoeffs()
 {
     if (updated())
     {
@@ -146,25 +156,36 @@ void Foam::pressureDirectedInletVelocityFvPatchVectorField::updateCoeffs()
     const fvsPatchField<scalar>& phip =
         patch().patchField<surfaceScalarField, scalar>(phi);
 
+    vectorField radialCf = patch().Cf() - (patch().Cf() & axis_) * axis_;
+    vectorField e1 = radialCf / mag(radialCf);
+    vectorField e2 = (axis_ ^ radialCf) / mag(axis_ ^ radialCf);
+    vector e3 = (axis_) / mag(axis_);
+
+    cartesianInletDir =
+      (inletDir_.component(vector::X) * e1
+       + inletDir_.component(vector::Y) * e2
+       + inletDir_.component(vector::Z) * e3)
+      / mag(inletDir_);
+
     tmp<vectorField> n = patch().nf();
-    tmp<scalarField> ndmagS = (n & inletDir_)*patch().magSf();
+    tmp<scalarField> ndmagS = (n & cartesianInletDir) * patch().magSf();
 
     if (phi.dimensions() == dimVelocity*dimArea)
     {
-        operator==(inletDir_*phip/ndmagS);
+        operator==(cartesianInletDir * phip/ndmagS);
     }
     else if (phi.dimensions() == dimDensity*dimVelocity*dimArea)
     {
         const fvPatchField<scalar>& rhop =
             patch().lookupPatchField<volScalarField, scalar>(rhoName_);
 
-        operator==(inletDir_*phip/(rhop*ndmagS));
+        operator==(cartesianInletDir * phip/(rhop*ndmagS));
     }
     else
     {
         FatalErrorIn
         (
-            "pressureDirectedInletVelocityFvPatchVectorField::updateCoeffs()"
+            "cylindricalPressureDirectedInletVelocityFvPatchVectorField::updateCoeffs()"
         )   << "dimensions of phi are not correct"
             << "\n    on patch " << this->patch().name()
             << " of field " << this->dimensionedInternalField().name()
@@ -176,7 +197,7 @@ void Foam::pressureDirectedInletVelocityFvPatchVectorField::updateCoeffs()
 }
 
 
-void Foam::pressureDirectedInletVelocityFvPatchVectorField::write
+void Foam::cylindricalPressureDirectedInletVelocityFvPatchVectorField::write
 (
     Ostream& os
 ) const
@@ -184,6 +205,8 @@ void Foam::pressureDirectedInletVelocityFvPatchVectorField::write
     fvPatchVectorField::write(os);
     writeEntryIfDifferent<word>(os, "phi", "phi", phiName_);
     writeEntryIfDifferent<word>(os, "rho", "rho", rhoName_);
+    os.writeKeyword("origin") << origin_ << token::END_STATEMENT << nl;
+    os.writeKeyword("axis") << axis_ << token::END_STATEMENT << nl;
     inletDir_.writeEntry("inletDirection", os);
     writeEntry("value", os);
 }
@@ -191,12 +214,12 @@ void Foam::pressureDirectedInletVelocityFvPatchVectorField::write
 
 // * * * * * * * * * * * * * * * Member Operators  * * * * * * * * * * * * * //
 
-void Foam::pressureDirectedInletVelocityFvPatchVectorField::operator=
+void Foam::cylindricalPressureDirectedInletVelocityFvPatchVectorField::operator=
 (
     const fvPatchField<vector>& pvf
 )
 {
-    fvPatchField<vector>::operator=(inletDir_*(inletDir_ & pvf));
+    fvPatchField<vector>::operator=(cartesianInletDir * (cartesianInletDir & pvf));
 }
 
 
@@ -207,7 +230,7 @@ namespace Foam
     makePatchTypeField
     (
         fvPatchVectorField,
-        pressureDirectedInletVelocityFvPatchVectorField
+        cylindricalPressureDirectedInletVelocityFvPatchVectorField
     );
 }
 
