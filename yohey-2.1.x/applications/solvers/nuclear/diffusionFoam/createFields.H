@@ -44,18 +44,18 @@
         transportProperties.lookup("D")
     );
 
-    dimensionedScalar sigmaA
+    dimensionedScalar SigmaA
     (
-        "sigmaA",
+        "SigmaA",
         dimless / dimLength,
-        transportProperties.lookup("sigmaA")
+        transportProperties.lookup("SigmaA")
     );
 
-    dimensionedScalar sigmaF
+    dimensionedScalar SigmaF
     (
-        "sigmaF",
+        "SigmaF",
         dimless / dimLength,
-        transportProperties.lookup("sigmaF")
+        transportProperties.lookup("SigmaF")
     );
 
     dimensionedScalar nuSigmaF

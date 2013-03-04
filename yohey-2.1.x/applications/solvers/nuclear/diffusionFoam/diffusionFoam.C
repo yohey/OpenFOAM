@@ -46,7 +46,7 @@ int main(int argc, char *argv[])
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
     dimensionedScalar energyPerFission("energyPerFission", dimEnergy, 200e6 * 1.6021892e-19);
-    dimensionedScalar fissions("fissions", power / energyPerFission);
+    dimensionedScalar targetFissions("targetFissions", power / energyPerFission);
 
     Info<< "\nCalculating neutron distribution\n" << endl;
 
@@ -54,19 +54,19 @@ int main(int argc, char *argv[])
     {
         Info<< "Time = " << runTime.timeName() << nl << endl;
 
-        const volScalarField nuSigmaFPhi = nuSigmaF * phi;
+        const volScalarField source = nuSigmaF * phi;
 
         solve
         (
             -fvm::laplacian(D, phi)
-            + fvm::Sp(sigmaA, phi)
+            + fvm::Sp(SigmaA, phi)
             ==
-            nuSigmaFPhi
+            source
         );
 
         phi.correctBoundaryConditions();
 
-        kEff = fvc::domainIntegrate(sigmaF * phi) / fissions;
+        kEff = fvc::domainIntegrate(SigmaF * phi) / targetFissions;
 
         Info << "kEff = " << kEff.value() << endl;
 
