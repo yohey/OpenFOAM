@@ -45,7 +45,7 @@ int main(int argc, char *argv[])
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-    dimensionedScalar energyPerFission("energyPerFission", dimEnergy, 200 * 1.6021892e-19);
+    dimensionedScalar energyPerFission("energyPerFission", dimEnergy, 200e6 * 1.6021892e-19);
     dimensionedScalar fissions("fissions", power / energyPerFission);
 
     Info<< "\nCalculating neutron distribution\n" << endl;
