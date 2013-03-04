@@ -25,7 +25,7 @@ Application
     diffusionFoam
 
 Description
-    Solves a simple Laplace equation.
+    Solves a single diffusion equation for nuclear reactors.
 
 \*---------------------------------------------------------------------------*/
 
