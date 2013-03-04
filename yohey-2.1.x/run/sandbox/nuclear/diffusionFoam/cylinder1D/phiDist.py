@@ -20,8 +20,8 @@ with gp.stdin as gin:
 
     gin.write('plot "-" w lp\n')
 
-    for n in range(10):
-        with open('%d/phi' % (n+1), 'r') as fp:
+    for n in range(5):
+        with open('100/phi%d' % n, 'r') as fp:
             for line in fp:
                 if 'internalField' in line:
                     for i, v in enumerate(map(float,

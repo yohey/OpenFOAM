@@ -25,7 +25,7 @@ Application
     diffusionFoam
 
 Description
-    Solves a single diffusion equation for nuclear reactors.
+    Solves a multigroup diffusion equation for nuclear reactors.
 
 \*---------------------------------------------------------------------------*/
 
@@ -41,12 +41,13 @@ int main(int argc, char *argv[])
 
     #include "createTime.H"
     #include "createMesh.H"
+    #include "readControls.H"
     #include "createFields.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-    dimensionedScalar energyPerFission("energyPerFission", dimEnergy, 200e6 * 1.6021892e-19);
-    dimensionedScalar targetFissions("targetFissions", power / energyPerFission);
+    const dimensionedScalar energyPerFission("energyPerFission", dimEnergy, 200e6 * 1.6021892e-19);
+    const dimensionedScalar targetFissions("targetFissions", power / energyPerFission);
 
     Info<< "\nCalculating neutron distribution\n" << endl;
 
@@ -54,23 +55,49 @@ int main(int argc, char *argv[])
     {
         Info<< "Time = " << runTime.timeName() << nl << endl;
 
-        const volScalarField source = nuSigmaF * phi;
+        dimensionedScalar fissions("fissions", targetFissions.dimensions(), 0);
 
-        solve
-        (
-            -fvm::laplacian(D, phi)
-            + fvm::Sp(SigmaA, phi)
-            ==
-            source
-        );
+        volScalarField neutrons = *nuSigmaF[0] * phi[0]->oldTime();
 
-        phi.correctBoundaryConditions();
+        for (int group = 1; group < nEnergyGroups; group++)
+        {
+            neutrons += *nuSigmaF[group] * phi[group]->oldTime();
+        }
 
-        kEff = fvc::domainIntegrate(SigmaF * phi) / targetFissions;
+
+        for (int group = nEnergyGroups-1; group >= 0; group--)
+        {
+            volScalarField source = *chi[group] * neutrons;
+
+            for (int parent = 0; parent < group; parent++)
+            {
+                source += *SigmaS[parent][group] * phi[parent]->oldTime();
+            }
+
+
+            solve
+            (
+                -fvm::laplacian(*D[group], *phi[group])
+                + fvm::Sp(*SigmaR[group], *phi[group])
+                ==
+                source
+            );
+
+            phi[group]->correctBoundaryConditions();
+
+            fissions += fvc::domainIntegrate(*SigmaF[group] * *phi[group]);
+        }
+
+
+        kEff = fissions / targetFissions;
 
         Info << "kEff = " << kEff.value() << endl;
 
-        phi /= kEff;
+        for (int group = 0; group < nEnergyGroups; group++)
+        {
+            *phi[group] /= kEff;
+        }
+
 
         runTime.write();
 
