@@ -58,9 +58,10 @@ int main(int argc, char *argv[])
 
         solve
         (
-            fvm::laplacian(D, phi)
-            - sigmaA * phi
-            + nuSigmaFPhi
+            -fvm::laplacian(D, phi)
+            + fvm::Sp(sigmaA, phi)
+            ==
+            nuSigmaFPhi
         );
 
         phi.correctBoundaryConditions();
