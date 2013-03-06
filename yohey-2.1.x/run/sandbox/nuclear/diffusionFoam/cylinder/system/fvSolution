@@ -16,7 +16,7 @@ FoamFile
 
 solvers
 {
-    phi
+    "phi[0-4]"
     {
         solver          PCG;
         preconditioner  DIC;
@@ -25,9 +25,9 @@ solvers
     }
 }
 
-SIMPLE
+neutronDiffusion
 {
-    nNonOrthogonalCorrectors 0;
+    nEnergyGroups       5;
 }
 
 // ************************************************************************* //

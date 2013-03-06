@@ -14,12 +14,50 @@ FoamFile
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-D              D [ 0 1 0 0 0 0 0 ] 2.0312e-2;
+D0             D0 [ 0 1 0 0 0 0 0 ] 2.5e-2;
+D1             D1 [ 0 1 0 0 0 0 0 ] 1.0e-2;
+D2             D2 [ 0 1 0 0 0 0 0 ] 0.9e-2;
+D3             D3 [ 0 1 0 0 0 0 0 ] 0.8e-2;
+D4             D4 [ 0 1 0 0 0 0 0 ] 0.24e-2;
 
-SigmaA         SigmaA [ 0 -1 0 0 0 0 0 ] 4.5954e-02;
+chi0           chi0 [0 0 0 0 0 0 0] 0.9;
+chi1           chi1 [0 0 0 0 0 0 0] 0.1;
+chi2           chi2 [0 0 0 0 0 0 0] 0;
+chi3           chi3 [0 0 0 0 0 0 0] 0;
+chi4           chi4 [0 0 0 0 0 0 0] 0;
 
-SigmaF         SigmaF [ 0 -1 0 0 0 0 0 ] 5.4078e-02;
+SigmaA0        SigmaA0 [ 0 -1 0 0 0 0 0 ] 0.04;
+SigmaA1        SigmaA1 [ 0 -1 0 0 0 0 0 ] 0.06;
+SigmaA2        SigmaA2 [ 0 -1 0 0 0 0 0 ] 0.05;
+SigmaA3        SigmaA3 [ 0 -1 0 0 0 0 0 ] 0.17;
+SigmaA4        SigmaA4 [ 0 -1 0 0 0 0 0 ] 3;
 
-nuSigmaF       nuSigmaF [ 0 -1 0 0 0 0 0 ] 1.3520e-01;
+SigmaF0        SigmaF0 [ 0 -1 0 0 0 0 0 ] 0.06;
+SigmaF1        SigmaF1 [ 0 -1 0 0 0 0 0 ] 0.04;
+SigmaF2        SigmaF2 [ 0 -1 0 0 0 0 0 ] 0.05;
+SigmaF3        SigmaF3 [ 0 -1 0 0 0 0 0 ] 0.13;
+SigmaF4        SigmaF4 [ 0 -1 0 0 0 0 0 ] 4.4;
+
+nuSigmaF0      nuSigmaF0 [ 0 -1 0 0 0 0 0 ] 0.15;
+nuSigmaF1      nuSigmaF1 [ 0 -1 0 0 0 0 0 ] 0.10;
+nuSigmaF2      nuSigmaF2 [ 0 -1 0 0 0 0 0 ] 0.125;
+nuSigmaF3      nuSigmaF3 [ 0 -1 0 0 0 0 0 ] 0.325;
+nuSigmaF4      nuSigmaF4 [ 0 -1 0 0 0 0 0 ] 11;
+
+SigmaS00       SigmaS00 [ 0 -1 0 0 0 0 0 ] 0.22;
+SigmaS01       SigmaS01 [ 0 -1 0 0 0 0 0 ] 0.02;
+SigmaS02       SigmaS02 [ 0 -1 0 0 0 0 0 ] 0;
+SigmaS03       SigmaS03 [ 0 -1 0 0 0 0 0 ] 0;
+SigmaS04       SigmaS04 [ 0 -1 0 0 0 0 0 ] 0;
+SigmaS11       SigmaS11 [ 0 -1 0 0 0 0 0 ] 0.54;
+SigmaS12       SigmaS12 [ 0 -1 0 0 0 0 0 ] 0.005;
+SigmaS13       SigmaS13 [ 0 -1 0 0 0 0 0 ] 0;
+SigmaS14       SigmaS14 [ 0 -1 0 0 0 0 0 ] 0;
+SigmaS22       SigmaS22 [ 0 -1 0 0 0 0 0 ] 0.76;
+SigmaS23       SigmaS23 [ 0 -1 0 0 0 0 0 ] 0.001;
+SigmaS24       SigmaS24 [ 0 -1 0 0 0 0 0 ] 0;
+SigmaS33       SigmaS33 [ 0 -1 0 0 0 0 0 ] 0.56;
+SigmaS34       SigmaS34 [ 0 -1 0 0 0 0 0 ] 0.00005;
+SigmaS44       SigmaS44 [ 0 -1 0 0 0 0 0 ] 0.47;
 
 // ************************************************************************* //
