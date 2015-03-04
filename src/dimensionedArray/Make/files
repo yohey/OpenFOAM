@@ -1,0 +1,4 @@
+
+Array/array/array.C
+
+LIB = $(FOAM_USER_LIBBIN)/libdimensionedArray
