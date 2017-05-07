@@ -1,0 +1,4 @@
+
+primitives/Array/array/array.C
+
+LIB = $(FOAM_SITE_LIBBIN)/libNuclearFOAM

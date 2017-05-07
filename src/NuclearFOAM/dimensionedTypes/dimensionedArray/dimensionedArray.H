@@ -2,6 +2,7 @@
 #ifndef dimensionedArray_H
 #define dimensionedArray_H
 
+#include "dimensionedScalar.H"
 #include "array.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
