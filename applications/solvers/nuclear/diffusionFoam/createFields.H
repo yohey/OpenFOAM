@@ -58,7 +58,7 @@
     char SigmaAName[9];
     char SigmaRName[9];
     char SigmaFName[9];
-    char nuSigmaFName[9];
+    char nuSigmaFName[10];
     char SigmaSName[9];
 
     for (int group = 0; group < nEnergyGroups; group++)

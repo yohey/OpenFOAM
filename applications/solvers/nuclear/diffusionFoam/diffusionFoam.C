@@ -57,7 +57,7 @@ int main(int argc, char *argv[])
 
         dimensionedScalar fissions("fissions", targetFissions.dimensions(), 0);
 
-        volScalarField neutrons = *nuSigmaF[0] * phi[0]->oldTime();
+        volScalarField neutrons(*nuSigmaF[0] * phi[0]->oldTime());
 
         for (int group = 1; group < nEnergyGroups; group++)
         {
@@ -67,7 +67,7 @@ int main(int argc, char *argv[])
 
         for (int group = nEnergyGroups-1; group >= 0; group--)
         {
-            volScalarField source = *chi[group] * neutrons;
+            volScalarField source(*chi[group] * neutrons);
 
             for (int parent = 0; parent < group; parent++)
             {
