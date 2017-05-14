@@ -10,6 +10,11 @@ namespace Foam
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
 template<class Form, class Cmpt>
+inline ArraySpace<Form, Cmpt>::ArraySpace()
+{}
+
+
+template<class Form, class Cmpt>
 inline ArraySpace<Form, Cmpt>::ArraySpace(int nCmpt)
 {
     nCmpt_ = nCmpt;

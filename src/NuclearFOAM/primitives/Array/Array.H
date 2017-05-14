@@ -28,10 +28,8 @@ public:
 
     // Member constants
 
-        // enum
-        // {
-        //     rank = 1 // Rank of Array is 1
-        // };
+        //- Rank of Array is 1
+        static const direction rank = 1;
 
 
     // Static data members
@@ -56,6 +54,9 @@ public:
 
 
     // Constructors
+
+        //- Construct null
+        inline Array();
 
         //- Construct null
         inline Array(int);

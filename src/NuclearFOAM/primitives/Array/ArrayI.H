@@ -7,6 +7,12 @@ namespace Foam
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
 template<class Cmpt>
+inline Array<Cmpt>::Array():
+    ArraySpace<Array<Cmpt>, Cmpt>()
+{}
+
+
+template<class Cmpt>
 inline Array<Cmpt>::Array(int nCmpt):
     ArraySpace<Array<Cmpt>, Cmpt>(nCmpt)
 {}
@@ -20,8 +26,8 @@ inline Array<Cmpt>::Array(int nCmpt, const Cmpt& v):
 
 template<class Cmpt>
 template<class Cmpt2>
-inline Array<Cmpt>::Array(const ArraySpace<Array<Cmpt2>, Cmpt2>& vs):
-    ArraySpace<Array<Cmpt>, Cmpt>(vs)
+inline Array<Cmpt>::Array(const ArraySpace<Array<Cmpt2>, Cmpt2>& as):
+    ArraySpace<Array<Cmpt>, Cmpt>(as)
 {}
 
 

@@ -55,6 +55,9 @@ public:
     // Constructors
 
         //- Construct null
+        inline ArraySpace();
+
+        //- Construct null
         inline ArraySpace(int);
 
         //- Construct from an uniform value

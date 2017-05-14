@@ -1,10 +1,9 @@
 
-#ifndef dimensionedArray_H
-#define dimensionedArray_H
+#ifndef array2_H
+#define array2_H
 
-#include "dimensionedScalar.H"
-#include "array.H"
-#include "array2.H"
+#include "scalar.H"
+#include "Array2.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -13,8 +12,7 @@ namespace Foam
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-typedef dimensioned<array>  dimensionedArray;
-typedef dimensioned<array2> dimensionedArray2;
+typedef Array2<scalar> array2;
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -22,7 +20,10 @@ typedef dimensioned<array2> dimensionedArray2;
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
+#include "array2I.H"
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
 #endif
 
 // ************************************************************************* //
-

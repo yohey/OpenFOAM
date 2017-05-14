@@ -3,6 +3,8 @@ EXE_INC = \
     -I$(LIB_SRC)/finiteVolume/lnInclude \
     -Iprimitives/ArraySpace \
     -Iprimitives/Array \
-    -Iprimitives/Array/array
+    -Iprimitives/Array/array \
+    -Iprimitives/Array2 \
+    -Iprimitives/Array2/array2
 
 LIB_LIBS = -lfiniteVolume
