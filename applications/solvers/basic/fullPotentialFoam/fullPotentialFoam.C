@@ -31,6 +31,7 @@ Description
 \*---------------------------------------------------------------------------*/
 
 #include "fvCFD.H"
+#include "fvOptions.H"
 #include "psiThermo.H"
 #include "fixedGradientFvPatchFields.H"
 #include "fixedValueFvPatchFields.H"
@@ -56,7 +57,7 @@ int main(int argc, char *argv[])
 
         #include "setPhiBoundary.H"
 
-        volScalarField aSqr = (thermo.Cp()/thermo.Cv()) / psi;
+        volScalarField aSqr("aSqr", (thermo.Cp()/thermo.Cv()) / psi);
 
         phi = linearInterpolate(rho*U) & mesh.Sf();
 
@@ -77,18 +78,18 @@ int main(int argc, char *argv[])
 
         U = alpha * fvc::grad(Phi) + (1 - alpha) * U;
         U.correctBoundaryConditions();
+        fvOptions.correct(U);
 
         if (T0.value() == 0)
         {
-            volScalarField h_ = h0 - magSqr(U)/2.;
-            h = pos(h_) * h_ + (1 - pos(h_)) * dimensionedScalar("1", dimEnergy/dimMass, 1e-6);
-            U = (pos(h_) + (1 - pos(h_)) * sqrt(2 * h0) / mag(U)) * U;
+            h = h0 - magSqr(U)/2.;
         }
         else
         {
             h = thermo.Cp() * T0 - magSqr(U)/2.;
         }
 
+        h = pos(h) * h + (1 - pos(h)) * hMin;
 
         if (T0.value() == 0)
         {
@@ -107,7 +108,7 @@ int main(int argc, char *argv[])
                    );
         }
 
-        h.correctBoundaryConditions();
+        h0.correctBoundaryConditions();
         p.correctBoundaryConditions();
         thermo.correct();
 

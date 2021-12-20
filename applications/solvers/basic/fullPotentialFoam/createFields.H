@@ -8,7 +8,7 @@
     thermo.validate(args.executable(), "h");
 
     volScalarField& p = thermo.p();
-    volScalarField& h = thermo.he();
+    volScalarField& h0 = thermo.he();
     const volScalarField& psi = thermo.psi();
 
     volScalarField rho
@@ -60,13 +60,21 @@
     );
 
     p.correctBoundaryConditions();
-    h.correctBoundaryConditions();
+    h0.correctBoundaryConditions();
     thermo.correct();
 
-    if (h0.value() == 0 && T0.value() == 0)
-    {
-        h0 = max(h + magSqr(U)/2.);
-    }
+    volScalarField h
+    (
+        IOobject
+        (
+            "h",
+            runTime.timeName(),
+            mesh,
+            IOobject::NO_READ,
+            IOobject::NO_WRITE
+        ),
+        h0 - magSqr(U)/2.
+    );
 
     if (p0.value() == 0)
     {
@@ -92,3 +100,7 @@
 
     label PhiRefCell = 0;
     scalar PhiRefValue = 0.0;
+
+    const dimensionedScalar hMin("hMin", dimEnergy/dimMass, 1e-6);
+
+    #include "createFvOptions.H"

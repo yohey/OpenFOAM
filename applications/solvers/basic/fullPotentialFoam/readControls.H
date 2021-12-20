@@ -4,13 +4,6 @@
     const int nNonOrthCorr =
         fullPotentialFlow.lookupOrDefault<int>("nNonOrthogonalCorrectors", 0);
 
-    dimensionedScalar h0
-    (
-        "h0",
-        dimEnergy/dimMass,
-        fullPotentialFlow.lookupOrDefault<double>("h0", 0.0)
-    );
-
     const dimensionedScalar T0
     (
         "T0",

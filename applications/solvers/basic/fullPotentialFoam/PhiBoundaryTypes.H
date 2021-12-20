@@ -1,4 +1,4 @@
-const volVectorField::GeometricBoundaryField& ubf = U.boundaryField();
+const volVectorField::Boundary& ubf = U.boundaryField();
 wordList PhiBoundaryTypes = ubf.types();
 
 forAll(PhiBoundaryTypes, patchi)
