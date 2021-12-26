@@ -60,15 +60,14 @@ cylindricalFixedValueFvPatchVectorField
     direction_(ptf.direction_, mapper),
     magnitude_(ptf.magnitude_, mapper)
 {
-    vectorField radialCf = ptf.patch().Cf() - (ptf.patch().Cf() & ptf.axis_) * ptf.axis_;
-    vectorField e1 = radialCf / mag(radialCf);
-    vectorField e2 = (ptf.axis_ ^ radialCf) / mag(ptf.axis_ ^ radialCf);
+    vectorField radialCf(ptf.patch().Cf() - (ptf.patch().Cf() & ptf.axis_) * ptf.axis_);
+    vectorField e1(radialCf / mag(radialCf));
+    vectorField e2((ptf.axis_ ^ radialCf) / mag(ptf.axis_ ^ radialCf));
     vector e3 = (ptf.axis_) / mag(ptf.axis_);
 
-    vectorField cartDir =
-      ptf.direction_.component(vector::X) * e1
-      + ptf.direction_.component(vector::Y) * e2
-      + ptf.direction_.component(vector::Z) * e3;
+    vectorField cartDir(ptf.direction_.component(vector::X) * e1
+                        + ptf.direction_.component(vector::Y) * e2
+                        + ptf.direction_.component(vector::Z) * e3);
 
     // Note: calculate product only on ptf to avoid multiplication on
     // unset values in reconstructPar.
@@ -97,15 +96,14 @@ cylindricalFixedValueFvPatchVectorField
     direction_("direction", dict, p.size()),
     magnitude_("magnitude", dict, p.size())
 {
-    vectorField radialCf = patch().Cf() - (patch().Cf() & axis_) * axis_;
-    vectorField e1 = radialCf / mag(radialCf);
-    vectorField e2 = (axis_ ^ radialCf) / mag(axis_ ^ radialCf);
+    vectorField radialCf(patch().Cf() - (patch().Cf() & axis_) * axis_);
+    vectorField e1(radialCf / mag(radialCf));
+    vectorField e2((axis_ ^ radialCf) / mag(axis_ ^ radialCf));
     vector e3 = (axis_) / mag(axis_);
 
-    vectorField cartDir =
-      direction_.component(vector::X) * e1
-      + direction_.component(vector::Y) * e2
-      + direction_.component(vector::Z) * e3;
+    vectorField cartDir(direction_.component(vector::X) * e1
+                        + direction_.component(vector::Y) * e2
+                        + direction_.component(vector::Z) * e3);
 
     fvPatchVectorField::operator=(magnitude_ * cartDir / mag(cartDir));
 }

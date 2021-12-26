@@ -156,9 +156,9 @@ void Foam::cylindricalPressureDirectedInletVelocityFvPatchVectorField::updateCoe
     const fvsPatchField<scalar>& phip =
         patch().patchField<surfaceScalarField, scalar>(phi);
 
-    vectorField radialCf = patch().Cf() - (patch().Cf() & axis_) * axis_;
-    vectorField e1 = radialCf / mag(radialCf);
-    vectorField e2 = (axis_ ^ radialCf) / mag(axis_ ^ radialCf);
+    vectorField radialCf(patch().Cf() - (patch().Cf() & axis_) * axis_);
+    vectorField e1(radialCf / mag(radialCf));
+    vectorField e2((axis_ ^ radialCf) / mag(axis_ ^ radialCf));
     vector e3 = (axis_) / mag(axis_);
 
     cartesianInletDir =
@@ -188,8 +188,8 @@ void Foam::cylindricalPressureDirectedInletVelocityFvPatchVectorField::updateCoe
             "cylindricalPressureDirectedInletVelocityFvPatchVectorField::updateCoeffs()"
         )   << "dimensions of phi are not correct"
             << "\n    on patch " << this->patch().name()
-            << " of field " << this->dimensionedInternalField().name()
-            << " in file " << this->dimensionedInternalField().objectPath()
+            << " of field " << this->internalField().name()
+            << " in file " << this->internalField().objectPath()
             << exit(FatalError);
     }
 
@@ -203,8 +203,8 @@ void Foam::cylindricalPressureDirectedInletVelocityFvPatchVectorField::write
 ) const
 {
     fvPatchVectorField::write(os);
-    writeEntryIfDifferent<word>(os, "phi", "phi", phiName_);
-    writeEntryIfDifferent<word>(os, "rho", "rho", rhoName_);
+    os.writeEntryIfDifferent<word>("phi", "phi", phiName_);
+    os.writeEntryIfDifferent<word>("rho", "rho", rhoName_);
     os.writeKeyword("origin") << origin_ << token::END_STATEMENT << nl;
     os.writeKeyword("axis") << axis_ << token::END_STATEMENT << nl;
     inletDir_.writeEntry("inletDirection", os);
